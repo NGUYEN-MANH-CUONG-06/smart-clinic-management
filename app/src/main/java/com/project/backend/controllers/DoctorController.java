@@ -1,32 +1,30 @@
 package com.project.back_end.controllers;
 
-import com.project.back_end.models.Doctor;
 import com.project.back_end.services.DoctorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.project.back_end.services.TokenService;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/doctors")
+@RequestMapping("/api")
 public class DoctorController {
 
-    @Autowired
-    private DoctorService doctorService;
+    private final DoctorService doctorService;
+    private final TokenService tokenService;
 
-    @GetMapping
-    public List<Doctor> getAllDoctors() {
-        return doctorService.getAllDoctors();
+    public DoctorController(DoctorService doctorService, TokenService tokenService) {
+        this.doctorService = doctorService;
+        this.tokenService = tokenService;
     }
 
-    @GetMapping("/user/{doctorId}/availability/{date}/{token}")
-    public ResponseEntity<?> getDoctorAvailability(
-            @PathVariable Long doctorId,
-            @PathVariable String date,
-            @PathVariable String token) {
-        return doctorService.getDoctorAvailability(doctorId, date, token);
+    @GetMapping("/doctor/{user}/availability")
+    public ResponseEntity<?> getDoctorAvailability(@PathVariable String user, @RequestHeader("Authorization") String token) {
+        if (!tokenService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+        return ResponseEntity.ok(doctorService.getAvailability(user));
     }
 }
+
 
 
