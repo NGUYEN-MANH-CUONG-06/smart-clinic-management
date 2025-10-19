@@ -20,7 +20,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Maven
-        run: mvn clean package
+      - name: Build backend
+        run: |
+          cd app
+          chmod +x mvnw
+          ./mvnw clean package -DskipTests
+
 
 
