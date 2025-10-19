@@ -1,39 +1,28 @@
 package com.project.backend.models;
 
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Entity
+@Table(name = "appointment")
 public class Appointment {
-    private int id;
-    private int doctorId;
-    private int patientId;
-    private String date;
-    private String time;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private LocalDate appointmentDate;
+    private LocalTime appointmentTime;
     private String status;
 
-    public Appointment() {}
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
-    public Appointment(int id, int doctorId, int patientId, String date, String time, String status) {
-        this.id = id;
-        this.doctorId = doctorId;
-        this.patientId = patientId;
-        this.date = date;
-        this.time = time;
-        this.status = status;
-    }
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public int getDoctorId() { return doctorId; }
-    public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
-
-    public int getPatientId() { return patientId; }
-    public void setPatientId(int patientId) { this.patientId = patientId; }
-
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
-
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    // constructors, getters, setters
 }
+
