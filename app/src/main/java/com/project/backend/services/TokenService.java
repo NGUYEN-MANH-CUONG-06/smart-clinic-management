@@ -1,31 +1,26 @@
 package com.project.backend.services;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TokenService {
-    private Map<String, String> tokens = new HashMap<>();
+    private final Key key = Keys.hmacShaKeyFor("change-this-to-secure-secret-256-bit!".getBytes());
 
-    // Generate a new token for a given username
-    public String generateToken(String username) {
-        String token = UUID.randomUUID().toString();
-        tokens.put(token, username);
-        return token;
+    public String generateToken(String email) {
+        return Jwts.builder()
+            .setSubject(email)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 3600_000))
+            .signWith(key)
+            .compact();
     }
-
-    // Validate if a token is valid
-    public boolean validateToken(String token) {
-        return tokens.containsKey(token);
-    }
-
-    // Get username by token
-    public String getUsernameFromToken(String token) {
-        return tokens.get(token);
-    }
-
-    // Invalidate a token (logout)
-    public void invalidateToken(String token) {
-        tokens.remove(token);
+    public boolean validate(String token) {
+        try { Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); return true; }
+        catch (JwtException e) { return false; }
     }
 }
+
