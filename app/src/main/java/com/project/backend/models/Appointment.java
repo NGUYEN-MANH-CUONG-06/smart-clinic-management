@@ -1,19 +1,16 @@
-package com.project.backend.models;
+package com.project.back_end.models;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import lombok.Data;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "appointment")
+@Data
+@Table(name = "appointments")
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private LocalDate appointmentDate;
-    private LocalTime appointmentTime;
-    private String status;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")
@@ -23,6 +20,8 @@ public class Appointment {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    // constructors, getters, setters
+    private LocalDateTime appointmentDate;
+    private String status;
 }
+
 
