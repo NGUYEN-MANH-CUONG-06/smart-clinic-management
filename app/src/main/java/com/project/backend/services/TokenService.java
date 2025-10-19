@@ -1,26 +1,32 @@
-package com.project.backend.services;
+package com.project.back_end.services;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.Date;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class TokenService {
-    private final Key key = Keys.hmacShaKeyFor("change-this-to-secure-secret-256-bit!".getBytes());
+    private static final String SECRET_KEY = "mySecretKey";
 
     public String generateToken(String email) {
         return Jwts.builder()
-            .setSubject(email)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + 3600_000))
-            .signWith(key)
-            .compact();
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
     }
-    public boolean validate(String token) {
-        try { Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); return true; }
-        catch (JwtException e) { return false; }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
+
 
