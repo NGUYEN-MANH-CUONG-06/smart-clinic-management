@@ -1,29 +1,29 @@
-# MySQL Database Design - Smart Clinic Management System
+# MySQL Database Design
 
-## Tables and Relationships
+## Doctor
+- doctor_id INT (PK)
+- name VARCHAR(100)
+- specialty VARCHAR(100)
+- phone VARCHAR(20)
+- email VARCHAR(100)
 
-### 1. Doctor
-- doctor_id (Primary Key)
-- name
-- specialty
-- phone
-- email
+## Patient
+- patient_id INT (PK)
+- name VARCHAR(100)
+- dob DATE
+- phone VARCHAR(20)
+- email VARCHAR(100)
 
-### 2. Patient
-- patient_id (Primary Key)
-- name
-- dob
-- phone
-- email
+## Appointment
+- appointment_id INT (PK)
+- doctor_id INT (FK -> Doctor.doctor_id)
+- patient_id INT (FK -> Patient.patient_id)
+- appointment_date DATE
+- appointment_time TIME
+- status VARCHAR(20)
 
-### 3. Appointment
-- appointment_id (Primary Key)
-- doctor_id (Foreign Key → Doctor.doctor_id)
-- patient_id (Foreign Key → Patient.patient_id)
-- appointment_date
-- status
+## Prescription
+- prescription_id INT (PK)
+- appointment_id INT (FK -> Appointment.appointment_id)
+- details TEXT
 
-## Relationships
-- One **Doctor** can have many **Appointments**
-- One **Patient** can have many **Appointments**
-- Each **Appointment** links one **Doctor** and one **Patient**
