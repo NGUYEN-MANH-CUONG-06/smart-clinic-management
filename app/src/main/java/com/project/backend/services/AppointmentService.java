@@ -1,18 +1,26 @@
-package com.project.backend.services;
+package com.project.back_end.services;
 
-import org.springframework.stereotype.Service;
+import com.project.back_end.models.Appointment;
+import com.project.back_end.repositories.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.project.backend.repositories.AppointmentRepository;
-import com.project.backend.models.Appointment;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class AppointmentService {
+
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-    public Appointment bookAppointment(Appointment a) {
-        return appointmentRepository.save(a);
+    public List<Appointment> getAppointmentsByDoctorAndDate(Long doctorId, LocalDate date) {
+        return appointmentRepository.findByDoctorIdAndAppointmentDateBetween(
+                doctorId,
+                date.atStartOfDay(),
+                date.plusDays(1).atStartOfDay()
+        );
     }
-    // other methods...
 }
+
 
