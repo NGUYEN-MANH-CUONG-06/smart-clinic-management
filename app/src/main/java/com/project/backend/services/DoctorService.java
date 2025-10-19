@@ -1,27 +1,44 @@
-package com.project.backend.services;
+package com.project.back_end.services;
 
-import org.springframework.stereotype.Service;
+import com.project.back_end.models.Doctor;
+import com.project.back_end.repositories.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.project.backend.repositories.DoctorRepository;
-import com.project.backend.models.Doctor;
-import java.time.LocalDate;
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class DoctorService {
+
     @Autowired
     private DoctorRepository doctorRepository;
-    @Autowired
-    private TokenService tokenService;
 
-    public boolean validateLogin(String email, String password) {
-        Doctor d = doctorRepository.findByEmail(email).orElse(null);
-        return d != null && d.getPassword().equals(password);
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll();
     }
 
-    public List<String> getAvailableTimeSlots(Long id, LocalDate date) {
-        // implement or mock availability
-        return List.of("09:00", "10:00", "14:00");
+    public ResponseEntity<Map<String, String>> loginDoctor(String email, String password) {
+        Doctor doctor = doctorRepository.findByEmail(email);
+        Map<String, String> response = new HashMap<>();
+
+        if (doctor != null && password.equals("123456")) { // tạm giả password
+            response.put("token", UUID.randomUUID().toString());
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("error", "Invalid credentials");
+            return ResponseEntity.status(401).body(response);
+        }
+    }
+
+    public ResponseEntity<?> getDoctorAvailability(Long doctorId, String date, String token) {
+        if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
+        return doctor.map(ResponseEntity::ok)
+                     .orElseGet(() -> ResponseEntity.status(404).body("Doctor not found"));
     }
 }
+
 
