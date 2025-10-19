@@ -1,11 +1,10 @@
-package com.project.backend.repositories;
+package com.project.back_end.repositories;
 
+import com.project.back_end.models.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.project.backend.models.Patient;
-import java.util.Optional;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    Optional<Patient> findByEmail(String email);
-    Optional<Patient> findByEmailOrPhone(String email, String phone);
+    Patient findByEmail(String email);
 }
+
 
