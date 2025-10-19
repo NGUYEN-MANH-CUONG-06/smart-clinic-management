@@ -1,14 +1,14 @@
-# Use an official OpenJDK 17 runtime as base image
-FROM openjdk:17-jdk-slim
-
-# Set working directory
+# build
+FROM maven:3.8.7-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn -B -f pom.xml clean package -DskipTests
 
-# Copy the project files into the container
-COPY . /app
-
-# Expose the default port
+# runtime
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app/app.jar"]
 
-# Command to run the application (assuming JAR built by Maven or Gradle)
-CMD ["java", "-jar", "app.jar"]
