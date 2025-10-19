@@ -1,20 +1,29 @@
-package com.project.backend.controllers;
+package com.project.back_end.controllers;
 
-import org.springframework.web.bind.annotation.*;
+import com.project.back_end.models.Prescription;
+import com.project.back_end.services.PrescriptionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.project.backend.services.PrescriptionService;
-import com.project.backend.models.Prescription;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/prescriptions")
 public class PrescriptionController {
+
     @Autowired
     private PrescriptionService prescriptionService;
 
+    @GetMapping
+    public List<Prescription> getAllPrescriptions() {
+        return prescriptionService.getAllPrescriptions();
+    }
+
     @PostMapping
-    public ResponseEntity<?> save(@RequestHeader("Authorization") String token, @RequestBody Prescription p) {
-        if (!prescriptionService.validateToken(token)) return ResponseEntity.status(401).body("Invalid token");
-        return ResponseEntity.ok(prescriptionService.save(p));
+    public Prescription createPrescription(@Valid @RequestBody Prescription prescription) {
+        return prescriptionService.savePrescription(prescription);
     }
 }
+
 
